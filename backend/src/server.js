@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+// biblioteca para controlar o acesso a api
 const cors = require('cors');
+// biblioteca para lidar com caminhos
 const path = require('path');
 
 const socketio = require('socket.io');
@@ -35,9 +37,10 @@ app.use((req, res, next) => {
 
 	return next();
 });
-
+// Se quisessemos q apenas um dominio pudesse acessar, colocariamos cors({ origin, 'http://nomedodominio'})
 app.use(cors());
 app.use(express.json());
+// Quando acessar esta rota lidar com arquivos estaticos e mostrando onde estao estes arquivos
 app.use('/files', express.static(path.resolve(__dirname, '..', 'uploads')));
 app.use(routes);
 

@@ -14,6 +14,7 @@ const SpotSchema = new mongoose.Schema(
 		}
 	},
 	{
+		// setando para toda vez que o Mongosse transformar os dados em Json, fazer isso com os virtuais tambem
 		toJSON: {
 			virtuals: true
 		}
