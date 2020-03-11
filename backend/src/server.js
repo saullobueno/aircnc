@@ -4,12 +4,14 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 // biblioteca para lidar com caminhos
 const path = require('path');
-
+// protocolo realtime socketio
 const socketio = require('socket.io');
+// protocolo http
 const http = require('http');
 
 const routes = require('./routes');
 
+// abstraindo os protocolos em variaveis diferentes e colocando para ouvir tanto um quanto o outro
 const app = express();
 const server = http.Server(app);
 const io = socketio(server);
@@ -23,15 +25,19 @@ mongoose.connect(
 	}
 );
 
+// criando objeto de usuarios conectados
 const connectedUsers = {};
 
+// conectando o io a todos os usuarios logados pelo id
 io.on('connection', socket => {
+	// pegando o id do usuario conectado
 	const { user_id } = socket.handshake.query;
-
+	// todo socket conectado tem sua id unica e passamos ele para o connectedUsers
 	connectedUsers[user_id] = socket.id;
 });
-
+// o next continua as funcionalidades
 app.use((req, res, next) => {
+	// dando conexao aos usuarios conectados para toda a aplicação
 	req.io = io;
 	req.connectedUsers = connectedUsers;
 

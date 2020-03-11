@@ -23,9 +23,11 @@ module.exports = {
 			.populate('user')
 			.execPopulate();
 
+		// passando a conexao em tempo real existente
 		const ownerSocket = req.connectedUsers[booking.spot.user];
 
 		if (ownerSocket) {
+			// passando a mensagem realtime de booking criado
 			req.io.to(ownerSocket).emit('booking_request', booking);
 		}
 

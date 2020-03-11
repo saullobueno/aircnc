@@ -10,7 +10,8 @@ export default function Dashboard() {
 	const [requests, setRequests] = useState([]);
 	// pegando id do usuario logado
 	const user_id = localStorage.getItem('user');
-	// socketio
+
+	// socketio restringido pelo usememo quando o id de usuario mudar
 	const socket = useMemo(
 		() =>
 			socketio('http://localhost:3333', {
@@ -22,6 +23,7 @@ export default function Dashboard() {
 	//Método do React que executa assim q o componente é chamado
 	useEffect(
 		() => {
+			// socket.on faz contato em realtime com a outra ponta
 			socket.on('booking_request', data => {
 				setRequests([...requests, data]);
 			});
@@ -40,15 +42,18 @@ export default function Dashboard() {
 		loadSpots();
 	}, []);
 
+	// função para aceitar o booking
 	async function handleAccept(id) {
 		await api.post(`/bookings/${id}/approvals`);
-
+		// setando as request q sao diferentes da q aacabou de ser aprovada
 		setRequests(requests.filter(request => request._id !== id));
 	}
 
+	// função para rejeitar o booking
 	async function handleReject(id) {
 		await api.post(`/bookings/${id}/rejections`);
 
+		// setando as request q sao diferentes da q aacabou de ser aprovada
 		setRequests(requests.filter(request => request._id !== id));
 	}
 
